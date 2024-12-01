@@ -1,11 +1,5 @@
 package com.ethan2272.link_shortener;
 
-import org.springframework.data.repository.Repository;
-import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-interface LinkMappingRepository extends Repository<LinkMapping, Long> {
-
-    LinkMapping save(LinkMapping linkMapping);
-
-    Optional<LinkMapping> findById(long id);
-}
+interface LinkMappingRepository extends JpaRepository<LinkMapping, String> { }

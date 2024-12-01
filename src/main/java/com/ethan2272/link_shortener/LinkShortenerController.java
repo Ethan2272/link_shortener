@@ -1,20 +1,28 @@
 package com.ethan2272.link_shortener;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class LinkShortenerController {
 
-    private static final String responseTemplate = "The entered link is %s";
+    private final LinkHandlerService LHS;
 
-    @Autowired
-    private LinkMappingRepository LMP;
+    public LinkShortenerController(LinkMappingRepository LinkRepo, LinkHandlerService LSS) {
+        this.LHS = LSS;
+    }
 
-    @GetMapping("/shorten")
+    @PostMapping("/shorten")
     public LinkMapping shortenLink(@RequestParam(name="link")String link) {
-        LinkMapping linkMapping = new LinkMapping(link);
-        LMP.save(linkMapping);
+        LinkMapping linkMapping = LHS.shortenAndSaveLink(link);
         return linkMapping;
+    }
+
+    @GetMapping("/{shortenedLink}")
+    public String redirectShortenedLink(@PathVariable String shortenedLink) {
+        return LHS.getOriginalLink(shortenedLink);
     }
 }
